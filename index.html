@@ -12,6 +12,7 @@
       --accent: #22d3ee;
       --text: #e5e7eb;
       --muted: #94a3b8;
+      --ok: #34d399;
     }
 
     * { box-sizing: border-box; }
@@ -26,15 +27,16 @@
 
     .layout {
       display: grid;
-      grid-template-columns: minmax(260px, 340px) 1fr;
+      grid-template-columns: minmax(290px, 360px) 1fr;
       min-height: 100vh;
     }
 
     .panel {
       padding: 1rem;
       border-right: 1px solid rgba(148, 163, 184, 0.18);
-      background: linear-gradient(160deg, rgba(17, 24, 39, 0.9), rgba(15, 23, 42, 0.95));
+      background: linear-gradient(160deg, rgba(17, 24, 39, 0.92), rgba(15, 23, 42, 0.96));
       backdrop-filter: blur(6px);
+      overflow: auto;
     }
 
     .panel h1 {
@@ -68,6 +70,12 @@
       border-color: transparent;
     }
 
+    .actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5rem;
+    }
+
     button {
       cursor: pointer;
       border-color: rgba(34, 211, 238, 0.45);
@@ -78,6 +86,12 @@
     button:hover {
       transform: translateY(-1px);
       box-shadow: 0 8px 30px rgba(34, 211, 238, 0.15);
+    }
+
+    .status {
+      margin-top: 0.7rem;
+      font-size: 0.9rem;
+      color: var(--ok);
     }
 
     #canvas-wrap {
@@ -92,7 +106,8 @@
       touch-action: none;
     }
 
-    .hint {
+    .hint,
+    .chips {
       margin-top: 1rem;
       font-size: 0.9rem;
       color: var(--muted);
@@ -101,10 +116,21 @@
       padding: 0.65rem 0.75rem;
     }
 
+    .chips button {
+      margin: 0.3rem 0.2rem 0 0;
+      padding: 0.45rem 0.6rem;
+      border-radius: 0.55rem;
+      font-size: 0.82rem;
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      box-shadow: none;
+      transform: none;
+    }
+
     @media (max-width: 860px) {
       .layout { grid-template-columns: 1fr; grid-template-rows: auto 1fr; }
       .panel { border-right: 0; border-bottom: 1px solid rgba(148, 163, 184, 0.18); }
-      #canvas-wrap { min-height: 70vh; }
+      #canvas-wrap { min-height: 65vh; }
     }
   </style>
 </head>
@@ -112,15 +138,29 @@
   <main class="layout">
     <aside class="panel">
       <h1>3D Model Builder</h1>
-      <p>Type a prompt and generate a scrollable 3D object. Use your mouse/touchpad to rotate, and scroll to zoom in/out.</p>
+      <p>Type a prompt and generate a scrollable 3D object. Drag to rotate and use your mouse wheel/trackpad to zoom.</p>
 
       <div class="input-row">
-        <input id="prompt" type="text" value="glowing crystal sphere" placeholder="Try: red cube, metal torus, glass sphere" />
-        <button id="generate">Generate model</button>
+        <input id="prompt" type="text" value="glowing crystal sphere" placeholder="Try: giant red cube, tiny glass sphere" />
+        <div class="actions">
+          <button id="generate">Generate model</button>
+          <button id="reset-camera" type="button">Reset camera</button>
+        </div>
+      </div>
+
+      <div id="status" class="status" aria-live="polite"></div>
+
+      <div class="chips">
+        Quick prompts:<br />
+        <button type="button" class="prompt-chip">gold metallic torus</button>
+        <button type="button" class="prompt-chip">tiny blue glass sphere</button>
+        <button type="button" class="prompt-chip">large green cone</button>
+        <button type="button" class="prompt-chip">neon purple crystal</button>
       </div>
 
       <div class="hint">
-        Prompt keywords can affect <strong>shape</strong>, <strong>color</strong>, and <strong>material</strong>. Examples: "blue glass sphere", "gold metallic torus", "green cone".
+        Prompt keywords can affect <strong>shape</strong>, <strong>color</strong>, <strong>material</strong>, and <strong>size</strong>.
+        Try words like <em>tiny</em>, <em>big</em>, <em>metallic</em>, <em>glass</em>, and <em>glowing</em>.
       </div>
     </aside>
     <section id="canvas-wrap"></section>

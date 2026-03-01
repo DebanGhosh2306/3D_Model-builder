@@ -1,60 +1,57 @@
 # 3D Model Builder
 
-Build and explore a prompt-driven 3D object directly in the browser.
+Build and explore prompt-driven 3D objects directly in the browser.
 
-This project lets you type a natural-language prompt (for example, **"gold metallic torus"**) and generates an interactive 3D model you can rotate and zoom.
+Type a prompt like `gold metallic torus` or `tiny blue glass sphere`, then generate an interactive 3D model you can rotate and zoom.
 
-## ✨ What it does
+## Features
 
-- Generates a 3D model from prompt keywords.
-- Supports interactive camera controls:
-  - **Drag** to rotate
-  - **Scroll** to zoom
-- Applies prompt-based styling:
-  - Shape (sphere, cube, torus, cone, etc.)
-  - Color (red, blue, gold, silver, etc.)
-  - Material traits (metallic, glassy, glowing)
+- Prompt-to-model generation for multiple shapes (`sphere`, `cube`, `torus`, `cone`, `cylinder`, `pyramid`, `crystal`, `capsule`)
+- Prompt-driven visual style:
+  - color keywords
+  - metallic or glass-like material
+  - glowing emissive effect
+  - size modifiers (`tiny`, `small`, `large`, `giant`)
+- Interactive viewport controls:
+  - drag to rotate
+  - scroll / trackpad pinch to zoom
+  - reset camera button
+- Quick prompt chips for one-click examples
+- Live build status message describing what was generated
 
-## 🧠 Prompt examples
-
-Try any of these:
+## Example prompts
 
 - `glowing crystal sphere`
-- `red cube`
-- `blue glass sphere`
 - `gold metallic torus`
-- `green cone`
+- `tiny blue glass sphere`
+- `large green cone`
+- `fast red cube`
+- `static silver cylinder`
 
-## 🛠 Tech stack
+## Tech stack
 
-- [Three.js](https://threejs.org/) for rendering and geometry
+- [Three.js](https://threejs.org/)
+- OrbitControls (Three.js examples)
 - Vanilla HTML/CSS/JavaScript (ES modules)
-- `OrbitControls` for smooth rotate/zoom interaction
 
-## 🚀 Run locally
-
-Because this app uses ES modules, run it through a local web server.
+## Run locally
 
 ```bash
 python3 -m http.server 4173
 ```
 
-Then open:
+Open <http://localhost:4173>.
 
-```text
-http://localhost:4173
-```
-
-## 📁 Project structure
+## Project structure
 
 ```text
 .
-├── index.html   # App layout and UI controls
-├── app.js       # Three.js scene + prompt parsing logic
+├── index.html   # UI layout (prompt input, buttons, example chips, canvas mount)
+├── app.js       # Three.js scene setup and prompt parsing/model generation logic
 └── README.md
 ```
 
-## 📌 Notes
+## Notes
 
-- This is a keyword-based prompt interpreter (not a full text-to-3D AI generator).
-- You can extend `colorMap` and `shapes` in `app.js` to support more prompt vocabulary.
+- This app is a deterministic keyword parser, not a full text-to-3D AI model.
+- Extend `colorMap` and `shapes` in `app.js` to add more vocabulary and geometry options.
