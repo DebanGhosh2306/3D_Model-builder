@@ -72,7 +72,7 @@
 
     .actions {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1fr 1fr 1fr;
       gap: 0.5rem;
     }
 
@@ -145,7 +145,14 @@
         <div class="actions">
           <button id="generate">Generate model</button>
           <button id="reset-camera" type="button">Reset camera</button>
+          <button id="snapshot" type="button">Save PNG</button>
         </div>
+      </div>
+
+      <div class="chips" style="margin-top:0.7rem">
+        Quick controls:<br />
+        <button type="button" id="toggle-spin">Pause spin</button>
+        <button type="button" id="toggle-wireframe">Wireframe off</button>
       </div>
 
       <div id="status" class="status" aria-live="polite"></div>

@@ -4,6 +4,9 @@ import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.166.1/exampl
 const promptInput = document.querySelector('#prompt');
 const generateBtn = document.querySelector('#generate');
 const resetCameraBtn = document.querySelector('#reset-camera');
+const snapshotBtn = document.querySelector('#snapshot');
+const toggleSpinBtn = document.querySelector('#toggle-spin');
+const toggleWireframeBtn = document.querySelector('#toggle-wireframe');
 const statusNode = document.querySelector('#status');
 const promptChips = [...document.querySelectorAll('.prompt-chip')];
 const mount = document.querySelector('#canvas-wrap');
@@ -45,6 +48,8 @@ scene.add(floor);
 
 let model;
 let spinSpeed = 0.005;
+let spinEnabled = true;
+let wireframeEnabled = false;
 
 const colorMap = {
   red: '#ef4444',
@@ -109,6 +114,11 @@ function setStatus({ shape, color, size, prompt }) {
   statusNode.textContent = `Built ${sizeWord} ${shape.label} • color ${color} • prompt: "${prompt || 'default'}"`;
 }
 
+function refreshControlLabels() {
+  toggleSpinBtn.textContent = spinEnabled ? 'Pause spin' : 'Resume spin';
+  toggleWireframeBtn.textContent = wireframeEnabled ? 'Wireframe on' : 'Wireframe off';
+}
+
 function buildModel(rawPrompt) {
   if (model) {
     scene.remove(model);
@@ -132,6 +142,7 @@ function buildModel(rawPrompt) {
   model.receiveShadow = true;
   model.scale.setScalar(size);
   scene.add(model);
+  model.material.wireframe = wireframeEnabled;
 
   spinSpeed = rotation;
   setStatus({ shape, color, size, prompt: rawPrompt.trim() });
@@ -148,6 +159,28 @@ buildModel(promptInput.value);
 generateBtn.addEventListener('click', () => buildModel(promptInput.value));
 resetCameraBtn.addEventListener('click', resetCamera);
 
+toggleSpinBtn.addEventListener('click', () => {
+  spinEnabled = !spinEnabled;
+  refreshControlLabels();
+});
+
+toggleWireframeBtn.addEventListener('click', () => {
+  wireframeEnabled = !wireframeEnabled;
+  if (model) {
+    model.material.wireframe = wireframeEnabled;
+    model.material.needsUpdate = true;
+  }
+  refreshControlLabels();
+});
+
+snapshotBtn.addEventListener('click', () => {
+  const dataUrl = renderer.domElement.toDataURL('image/png');
+  const anchor = document.createElement('a');
+  anchor.href = dataUrl;
+  anchor.download = `model-${Date.now()}.png`;
+  anchor.click();
+});
+
 promptChips.forEach((chip) => {
   chip.addEventListener('click', () => {
     promptInput.value = chip.textContent.trim();
@@ -163,13 +196,14 @@ promptInput.addEventListener('keydown', (event) => {
 
 function animate() {
   requestAnimationFrame(animate);
-  if (model && spinSpeed > 0) {
+  if (model && spinEnabled && spinSpeed > 0) {
     model.rotation.y += spinSpeed;
   }
   controls.update();
   renderer.render(scene, camera);
 }
 animate();
+refreshControlLabels();
 
 window.addEventListener('resize', () => {
   camera.aspect = mount.clientWidth / mount.clientHeight;
